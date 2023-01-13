@@ -14,6 +14,21 @@ const Button = (props) => {
   )
 }
 
+const Better = (props) => {
+
+  return(
+    <>
+      <h2>Anecdote with most votes </h2>
+      <div>
+        {props.anecdot}
+      </div>
+      <div>
+        has {props.vote} votes
+      </div>
+    </>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -25,24 +40,41 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.'
   ];
 
-  function addVotes(votes, index, f) {
+  function addVotes(votes, index, f, oldMax) {
     const copy = [...votes];
     copy[index] += 1;
+    checkMore(copy[index], oldMax);
     f(copy);
+  }
+
+  function checkMore(a, b) {
+    if (a <= b) return;
+    let c = a;
+    setMaxGrade(c);
   }
 
   const array = Array(anecdotes.length).fill(0);
   const [votes, setVotes] = useState(array);
   const [selected, setSelected] = useState(0);
+  const [maxGrade, setMaxGrade] = useState(0);
 
   return (
     <>
+      <h2>Anecdote of the day</h2>
       <div>
         <div>{anecdotes[selected]}</div>
         <div>has {votes[selected]} votes</div>
       </div>
-      <Button handleClick={() => addVotes(votes, selected, setVotes)} text="vote" />
-      <Button handleClick={() => setSelected(randomInteger(anecdotes.length - 1))} text="next anecdote" />
+      <Button 
+        handleClick={() => addVotes(votes, selected, setVotes, maxGrade)} 
+        text="vote" />
+      <Button 
+        handleClick={() => setSelected(randomInteger(anecdotes.length - 1))} 
+        text="next anecdote" />
+      <Better 
+        anecdot={anecdotes[votes.indexOf(maxGrade)]}
+        vote={maxGrade}
+        />
     </>
   );
 }
